@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useStateContext } from "../context";
 import {
@@ -19,6 +19,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { share } from "../assets";
+import featuredBg from "../assets/featured-campaign.png";
 
 const SectionHeader = ({ label }) => (
   <div className="flex items-center gap-3 mb-5">
@@ -141,9 +142,10 @@ const CampaignDetails = () => {
       {/* ── Hero image ── */}
       <div className="relative w-full h-[360px] rounded-3xl overflow-hidden mb-8">
         <img
-          src={campaign?.image}
+          src={campaign?.image || featuredBg}
           alt="campaign"
           className="w-full h-full object-cover"
+          onError={(e) => { e.currentTarget.src = featuredBg; }}
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#07070f] via-[#07070f]/40 to-transparent" />
@@ -351,17 +353,19 @@ const CampaignDetails = () => {
         </div>
       </div>
 
-      {/* AI Chatbot Widget */}
-      <ChatbotWidget
-        campaignData={{
-          title: campaign?.title,
-          category: campaign?.category,
-          target: campaign?.target,
-          amountCollected: campaign?.amountCollected,
-          daysLeft: remainingDays,
-          description: campaign?.description,
-        }}
-      />
+      {/* AI Chatbot Widget — only mount once campaign data is available */}
+      {campaign?.title && (
+        <ChatbotWidget
+          campaignData={{
+            title: campaign.title,
+            category: campaign.category,
+            target: campaign.target,
+            amountCollected: campaign.amountCollected,
+            daysLeft: remainingDays,
+            description: campaign.description,
+          }}
+        />
+      )}
 
       {/* Milestone Notification */}
       {milestoneNotification && (

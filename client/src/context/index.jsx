@@ -292,7 +292,7 @@ export const StateContextProvider = ({ children }) => {
       image: campaign.image,
       id: i,
     }));
-    setCampaigns(parsedCampaigns);
+    setCampaigns(parsedCampaigns ?? []);
     setIsLoading(false);
     console.log("Campaigns from index.jsx", campaigns);
     return parsedCampaigns;

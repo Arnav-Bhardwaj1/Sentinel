@@ -10,4 +10,15 @@ export default defineConfig({
   define: {
     "process.env": process.env,
   },
+  server: {
+    proxy: {
+      "/ollama": {
+        target: "http://localhost:11434",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ollama/, ""),
+        timeout: 120000,
+        proxyTimeout: 120000,
+      },
+    },
+  },
 });

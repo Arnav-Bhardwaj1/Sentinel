@@ -1,14 +1,26 @@
 // Ollama AI Service for all AI-powered features
 import axios from 'axios';
 
-const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || 'http://localhost:11434/api/generate';
-const MODEL = import.meta.env.VITE_OLLAMA_MODEL || 'llama3.2:3b';
+const OLLAMA_BASE = '/ollama';
+const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || `${OLLAMA_BASE}/api/generate`;
+const MODEL = import.meta.env.VITE_OLLAMA_MODEL || 'qwen2:0.5b';
 
 class OllamaService {
   constructor() {
     this.baseURL = OLLAMA_URL;
     this.model = MODEL;
     this.cache = new Map();
+  }
+
+  async checkHealth() {
+    try {
+      const res = await axios.get(`${OLLAMA_BASE}/api/tags`, { timeout: 4000 });
+      const models = res.data?.models ?? [];
+      const available = models.some((m) => m.name?.startsWith(MODEL.split(':')[0]));
+      return { online: true, modelReady: available, models };
+    } catch {
+      return { online: false, modelReady: false, models: [] };
+    }
   }
 
   async generateResponse(prompt, useCache = true) {
@@ -26,24 +38,32 @@ class OllamaService {
           stream: false,
         },
         {
-          timeout: 30000,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          timeout: 120000,
+          headers: { 'Content-Type': 'application/json' },
         }
       );
 
-      const result = response.data.response;
-      
-      // Cache the result
+      // Ollama may return an error payload with HTTP 200
+      if (response.data?.error) {
+        throw new Error(`Ollama error: ${response.data.error}`);
+      }
+
+      const result = response.data?.response;
+      if (!result) {
+        throw new Error(`Unexpected Ollama response: ${JSON.stringify(response.data)}`);
+      }
+
       if (useCache) {
         this.cache.set(prompt, result);
       }
 
       return result;
     } catch (error) {
-      console.error('Ollama API Error:', error);
-      throw new Error('Failed to generate AI response. Please ensure Ollama is running.');
+      const detail = error.response?.data
+        ? JSON.stringify(error.response.data)
+        : error.message;
+      console.error('Ollama API Error:', detail);
+      throw new Error(detail);
     }
   }
 
@@ -84,20 +104,16 @@ Use an inspiring and grateful tone. Include relevant emojis.`;
   }
 
   async answerDonorQuestion(question, campaignData) {
-    const prompt = `You are a 24/7 AI assistant for a Sentinel campaign. Answer the donor's question based on the campaign information provided.
+    const prompt = `INSTRUCTIONS: Reply in English only. Be factual, direct, and concise (1-3 sentences). Use only the data provided. No disclaimers.
 
 Campaign: ${campaignData.title}
-Category: ${campaignData.category}
-Target: ${campaignData.target} ETH
-Amount Raised: ${campaignData.amountCollected} ETH
-Days Left: ${campaignData.daysLeft}
+Goal: ${campaignData.target} ETH
+Raised: ${campaignData.amountCollected} ETH
+Days left: ${campaignData.daysLeft}
 Description: ${campaignData.description}
 
-Donor Question: ${question}
-
-Provide a helpful, concise answer (2-3 sentences max). If you cannot answer based on the available information, politely say so and suggest contacting the campaign creator.
-
-Answer:`;
+Question: ${question}
+English answer:`;
 
     return await this.generateResponse(prompt, false);
   }

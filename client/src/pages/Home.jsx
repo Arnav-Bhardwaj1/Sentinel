@@ -168,7 +168,7 @@ const StatCard = ({ value, label, icon, accentColor }) => (
 
 /* ─── Home Page ───────────────────────────────────────────────────────────── */
 const Home = () => {
-  const { campaigns, isLoading } = useStateContext();
+  const { campaigns = [], isLoading } = useStateContext();
   const navigate = useNavigate();
   const campaignsRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("All");

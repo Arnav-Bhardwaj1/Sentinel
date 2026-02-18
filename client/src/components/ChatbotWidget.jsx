@@ -1,8 +1,9 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ollamaService from '../services/ollamaService';
 
 const ChatbotWidget = ({ campaignData }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [ollamaStatus, setOllamaStatus] = useState('checking'); // 'checking' | 'online' | 'offline'
   const [messages, setMessages] = useState([
     {
       type: 'bot',
@@ -13,6 +14,13 @@ const ChatbotWidget = ({ campaignData }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    ollamaService.clearCache();
+    ollamaService.checkHealth().then(({ online, modelReady }) => {
+      setOllamaStatus(online && modelReady ? 'online' : online ? 'no-model' : 'offline');
+    });
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,12 +54,13 @@ const ChatbotWidget = ({ campaignData }) => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      const errorMessage = {
-        type: 'bot',
-        text: "I'm having trouble connecting right now. Please make sure Ollama is running, or contact the campaign creator directly.",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      const msg = error.message ?? '';
+      const text = msg.includes('memory')
+        ? "The AI model doesn't have enough system memory to run. Try a smaller model in Ollama."
+        : msg.includes('model')
+        ? `Model error: ${msg}`
+        : "Something went wrong. Please try again in a moment.";
+      setMessages((prev) => [...prev, { type: 'bot', text, timestamp: new Date() }]);
     } finally {
       setLoading(false);
     }
@@ -87,9 +96,26 @@ const ChatbotWidget = ({ campaignData }) => {
             <h3 className="font-epilogue font-bold text-white text-lg">
               Campaign Assistant 🤖
             </h3>
-            <p className="font-epilogue text-white/80 text-xs mt-1">
-              Available 24/7 to answer your questions
-            </p>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  ollamaStatus === 'online'
+                    ? 'bg-green-300 animate-pulse'
+                    : ollamaStatus === 'checking'
+                    ? 'bg-yellow-200 animate-pulse'
+                    : 'bg-red-300'
+                }`}
+              />
+              <p className="font-epilogue text-white/80 text-xs">
+                {ollamaStatus === 'online'
+                  ? 'AI online · powered by Ollama'
+                  : ollamaStatus === 'no-model'
+                  ? 'Ollama running — model not found'
+                  : ollamaStatus === 'checking'
+                  ? 'Connecting to AI…'
+                  : 'AI offline — run: ollama serve'}
+              </p>
+            </div>
           </div>
 
           {/* Messages */}
