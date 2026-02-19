@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 import { useStateContext } from "../context";
@@ -138,7 +138,7 @@ const CreateCampaign = () => {
             <div className="flex flex-wrap gap-6">
               <FormField
                 labelName="Goal (ETH) *"
-                placeholder="e.g. 0.50"
+                placeholder="e.g. 0.0000001"
                 inputType="number"
                 value={form.target}
                 handleChange={(e) => handleFormFieldChange("target", e)}

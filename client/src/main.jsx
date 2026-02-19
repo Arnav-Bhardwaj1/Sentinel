@@ -2,14 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Sepolia } from "@thirdweb-dev/chains";
-import {
-  ThirdwebProvider,
-  coinbaseWallet,
-  metamaskWallet,
-  rainbowWallet,
-  trustWallet,
-  walletConnect,
-} from "@thirdweb-dev/react";
+import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
 import { StateContextProvider } from "./context";
 import App from "./App";
 import "./index.css";
@@ -66,15 +59,7 @@ root.render(
   <ThirdwebProvider
     activeChain={Sepolia}
     clientId={`${process.env.CLIENT_ID}`}
-    supportedWallets={[
-      metamaskWallet({
-        recommended: true,
-      }),
-      coinbaseWallet(),
-      rainbowWallet(),
-      walletConnect(),
-      trustWallet(),
-    ]}
+    supportedWallets={[metamaskWallet({ recommended: true })]}
   >
     <StateContextProvider>
       <RouterProvider router={router}></RouterProvider>

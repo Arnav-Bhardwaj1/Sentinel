@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 const inputClass = `
   w-full py-3.5 px-5 rounded-xl font-epilogue text-sm text-white
@@ -61,8 +61,8 @@ const FormField = ({
           onChange={handleChange}
           type={inputType}
           placeholder={placeholder}
-          min={0}
-          step="0.01"
+          min={0.0000001}
+          step="0.0000001"
           onFocus={(e) =>
             e.target.addEventListener("wheel", (e) => e.preventDefault(), { passive: false })
           }

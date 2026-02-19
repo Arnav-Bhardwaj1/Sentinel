@@ -13,6 +13,7 @@ import CircularMilestoneGauge from "../components/CircularMilestoneGauge";
 import ImpactTooltip from "../components/ImpactTooltip";
 import ChatbotWidget from "../components/ChatbotWidget";
 import MilestoneNotification from "../components/MilestoneNotification";
+import PaymentModal, { ETH_TO_INR, formatINR } from "../components/PaymentModal";
 import milestoneService from "../services/milestoneService";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
@@ -48,6 +49,7 @@ const CampaignDetails = () => {
   const [milestones, setMilestones] = useState([]);
   const [showImpactTooltip, setShowImpactTooltip] = useState(false);
   const [milestoneNotification, setMilestoneNotification] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     if (contract) fetchDonators();
@@ -327,6 +329,34 @@ const CampaignDetails = () => {
                 isDisabled={remainingDays === 0}
                 handleClick={handleDonate}
               />
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-white/[0.06]" />
+                <span className="font-epilogue text-[10px] text-white/25 uppercase tracking-widest">or</span>
+                <div className="flex-1 h-px bg-white/[0.06]" />
+              </div>
+
+              {/* Web2 payment button */}
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                disabled={remainingDays === 0}
+                className={`w-full py-3 rounded-xl font-jakarta font-semibold text-sm border transition-all duration-200 flex items-center justify-center gap-2
+                  ${remainingDays === 0
+                    ? "bg-white/[0.03] border-white/[0.06] text-white/20 cursor-not-allowed"
+                    : "bg-white/[0.04] border-white/[0.1] text-white/70 hover:bg-white/[0.08] hover:border-[#f97316]/30 hover:text-white"
+                  }`}
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                Pay via UPI / Card / Bank
+              </button>
+              {amount && (
+                <p className="text-center font-epilogue text-[10px] text-white/20">
+                  ≈ {formatINR(parseFloat(amount || 0) * ETH_TO_INR)} INR
+                </p>
+              )}
             </div>
           </div>
 
@@ -352,6 +382,14 @@ const CampaignDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Web2 Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        amountINR={formatINR(parseFloat(amount || 0) * ETH_TO_INR)}
+        campaignTitle={campaign?.title}
+      />
 
       {/* AI Chatbot Widget — only mount once campaign data is available */}
       {campaign?.title && (

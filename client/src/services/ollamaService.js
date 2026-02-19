@@ -68,18 +68,20 @@ class OllamaService {
   }
 
   async generateImpactTranslation(amount, campaignData) {
-    const prompt = `You are an AI assistant for Sentinel, a decentralized crowdfunding platform. A donor is contributing ${amount} ETH to a campaign titled "${campaignData.title}" in the ${campaignData.category} category.
+    const { title, category, description, target } = campaignData;
+    const pct = target ? ((amount / target) * 100).toFixed(1) : null;
 
-Campaign Description: ${campaignData.description}
-Target Amount: ${campaignData.target} ETH
+    const prompt = `Campaign: "${title}"
+Category: ${category}
+Description: ${description}
+Goal: ${target} ETH | This donation: ${amount} ETH (${pct ? pct + "% of goal" : "a meaningful contribution"})
 
-Generate a short, inspiring message (max 2 sentences) that explains the tangible impact of this ${amount} ETH donation. Be specific and use relevant emojis. Focus on what this exact amount can accomplish.
+Write exactly 2 sentences in English about the real-world impact of this ${amount} ETH donation on the ${category} campaign above. Use specific, concrete outcomes directly related to "${title}". Add 1-2 relevant emojis. Do not mention ETH or blockchain.
 
-Example format: "Your ${amount} ETH contribution will provide 3 solar lamps for the student dormitory! ☀️ This brings us closer to lighting up the entire facility."
+Your ${amount} ETH will`;
 
-Generate the impact message now:`;
-
-    return await this.generateResponse(prompt, true);
+    const completion = await this.generateResponse(prompt, true);
+    return `Your ${amount} ETH will ${completion.trimStart()}`;
   }
 
   async generateMilestoneReport(campaignData, milestone, totalDonors) {
