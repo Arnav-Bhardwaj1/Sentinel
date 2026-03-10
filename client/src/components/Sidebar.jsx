@@ -46,7 +46,7 @@ const NavIcons = {
 
 /* ── Tooltip wrapper ─────────────────────────────────────────── */
 const Tip = ({ label }) => (
-  <div className="absolute left-[calc(100%+14px)] px-3 py-1.5 rounded-lg glass text-white text-xs font-epilogue font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-[9999]">
+  <div className="absolute left-[calc(100%+14px)] px-3 py-1.5 rounded-lg glass text-slate-700 dark:text-white text-xs font-epilogue font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-[9999]">
     {label}
   </div>
 );
@@ -76,7 +76,7 @@ const Sidebar = () => {
                   className={`relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group
                     ${isActive
                       ? "bg-gradient-to-br from-[#f97316]/30 to-[#f97316]/10 shadow-[0_0_18px_rgba(249,115,22,0.4)] text-[#f97316]"
-                      : "text-white/35 hover:text-white/80 hover:bg-white/[0.07]"
+                      : "text-slate-400 dark:text-white/35 hover:text-slate-700 dark:hover:text-white/80 hover:bg-slate-200/60 dark:hover:bg-white/[0.07]"
                     }`}
                 >
                   {/* Active bar */}
@@ -103,7 +103,7 @@ const Sidebar = () => {
         <div className="flex flex-col items-center gap-1.5">
           <button
             onClick={() => setPayOpen(true)}
-            className="relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group text-white/35 hover:text-[#03dac5] hover:bg-[#03dac5]/[0.08]"
+            className="relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group text-slate-400 dark:text-white/35 hover:text-[#03dac5] hover:bg-[#03dac5]/[0.08]"
           >
             <span className="w-[22px] h-[22px] transition-transform duration-200 group-hover:scale-110">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">

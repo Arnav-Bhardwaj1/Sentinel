@@ -1,4 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -24,9 +24,15 @@
   }
 
   body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    font-family: 'Epilogue', sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
     background-color: #07070f;
     color: #f1f5f9;
-    font-family: 'Epilogue', sans-serif;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
@@ -45,6 +51,10 @@
   }
 
   ::-webkit-scrollbar-track {
+    background: #e2e8f0;
+  }
+
+  .dark ::-webkit-scrollbar-track {
     background: #0d0d1a;
   }
 
@@ -60,16 +70,26 @@
 
 @layer components {
   .glass {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass {
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .glass-strong {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .glass-strong {
+    background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.12);
   }
 
@@ -104,8 +124,12 @@
   }
 
   .dot-grid {
-    background-image: radial-gradient(rgba(249,115,22, 0.15) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(249,115,22, 0.2) 1px, transparent 1px);
     background-size: 28px 28px;
+  }
+
+  .dark .dot-grid {
+    background-image: radial-gradient(rgba(249,115,22, 0.15) 1px, transparent 1px);
   }
 
   .gradient-text {

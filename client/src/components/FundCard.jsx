@@ -27,7 +27,7 @@ const FundCard = ({
 
   return (
     <div
-      className="sm:w-[300px] w-full rounded-2xl glass cursor-pointer group
+      className="w-full rounded-2xl glass cursor-pointer group
         hover:shadow-[0_0_32px_rgba(249,115,22,0.25)] hover:-translate-y-1.5
         transition-all duration-300 overflow-hidden border border-white/[0.07]
         hover:border-[#f97316]/30"

@@ -15,3 +15,4 @@ export { default as CircularMilestoneGauge } from "./CircularMilestoneGauge";
 export { default as ImpactTooltip } from "./ImpactTooltip";
 export { default as ChatbotWidget } from "./ChatbotWidget";
 export { default as MilestoneNotification } from "./MilestoneNotification";
+export { default as RotatingGlobe } from "./RotatingGlobe";

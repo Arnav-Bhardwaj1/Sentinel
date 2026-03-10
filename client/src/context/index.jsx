@@ -30,6 +30,13 @@ export const StateContextProvider = ({ children }) => {
   const [themeMode, setThemeMode] = useState(
     localStorage.getItem("themeMode") || "System"
   );
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("themeMode");
+    if (stored === "Dark") return true;
+    if (stored === "Light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [campaigns, setCampaigns] = useState([]);
   const [userCampaigns, setUserCampaigns] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,47 +45,54 @@ export const StateContextProvider = ({ children }) => {
     getCampaigns();
   }, [contract, address]);
 
-  useEffect(() => {
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
-    const onWindowMatch = () => {
-      if (
-        localStorage.getItem("themeMode") === "Dark" ||
-        (!localStorage.getItem("themeMode") && systemTheme.matches)
-      ) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    };
-
-    onWindowMatch();
-
-    systemTheme.addEventListener("change", onWindowMatch);
-
-    return () => {
-      systemTheme.removeEventListener("change", onWindowMatch);
-    };
-  }, []);
-
   const toggleTheme = (mode) => {
     setThemeMode(mode);
   };
 
   useEffect(() => {
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
     switch (themeMode) {
       case "Dark":
         document.documentElement.classList.add("dark");
         localStorage.setItem("themeMode", "Dark");
+        setIsDark(true);
         break;
       case "Light":
         document.documentElement.classList.remove("dark");
         localStorage.setItem("themeMode", "Light");
+        setIsDark(false);
         break;
+      case "System":
       default:
-        localStorage.removeItem("themeMode");
+        localStorage.setItem("themeMode", "System");
+        if (systemTheme.matches) {
+          document.documentElement.classList.add("dark");
+          setIsDark(true);
+        } else {
+          document.documentElement.classList.remove("dark");
+          setIsDark(false);
+        }
         break;
     }
   }, [themeMode]);
+
+  useEffect(() => {
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSystemThemeChange = () => {
+      if (localStorage.getItem("themeMode") === "System") {
+        if (systemTheme.matches) {
+          document.documentElement.classList.add("dark");
+          setIsDark(true);
+        } else {
+          document.documentElement.classList.remove("dark");
+          setIsDark(false);
+        }
+      }
+    };
+    systemTheme.addEventListener("change", onSystemThemeChange);
+    return () => systemTheme.removeEventListener("change", onSystemThemeChange);
+  }, []);
 
   const publishCampaign = async (form) => {
     try {
@@ -277,21 +291,39 @@ export const StateContextProvider = ({ children }) => {
   const getCampaigns = async () => {
     setIsLoading(true);
     const campaigns = await contract?.call("getCampaigns");
-    // console.log("Raw Campaigns from contract before parsing", campaigns);
-    const parsedCampaigns = campaigns?.map((campaign, i) => ({
-      owner: campaign.owner,
-      name: campaign.name,
-      title: campaign.title,
-      category: campaign.category,
-      description: campaign.description,
-      target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(
+
+    const parsedCampaigns = campaigns?.map((campaign, i) => {
+      const formattedTarget = ethers.utils.formatEther(
+        campaign.target.toString()
+      );
+      const formattedAmountCollected = ethers.utils.formatEther(
         campaign.amountCollected.toString()
-      ),
-      image: campaign.image,
-      id: i,
-    }));
+      );
+
+      // Format individual donation amounts from on-chain data if present
+      const formattedDonations = Array.isArray(campaign.donations)
+        ? campaign.donations.map((donation) =>
+            ethers.utils.formatEther(donation.toString())
+          )
+        : [];
+
+      return {
+        owner: campaign.owner,
+        name: campaign.name,
+        title: campaign.title,
+        category: campaign.category,
+        description: campaign.description,
+        target: formattedTarget,
+        deadline: campaign.deadline.toNumber(),
+        amountCollected: formattedAmountCollected,
+        image: campaign.image,
+        // Rich donor analytics, used by Insights/Profile dashboards
+        donators: Array.isArray(campaign.donators) ? campaign.donators : [],
+        donations: formattedDonations,
+        id: i,
+      };
+    });
+
     setCampaigns(parsedCampaigns ?? []);
     setIsLoading(false);
     console.log("Campaigns from index.jsx", campaigns);
@@ -339,6 +371,7 @@ export const StateContextProvider = ({ children }) => {
         updateCampaign,
         toggleTheme,
         themeMode,
+        isDark,
         campaigns,
         isLoading,
         setIsLoading,

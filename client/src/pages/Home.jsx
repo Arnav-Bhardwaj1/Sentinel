@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { useStateContext } from "../context";
-import { DisplayCampaigns } from "../components";
+import { DisplayCampaigns, RotatingGlobe } from "../components";
 import { daysLeft } from "../utils";
 import featuredBg from "../assets/featured-campaign.png";
 
@@ -197,10 +197,14 @@ const Home = () => {
     )[0];
   }, [campaigns]);
 
-  /* Filtered campaign list */
+  /* Filtered campaign list - sorted by most recent first */
   const filteredCampaigns = useMemo(() => {
-    if (activeCategory === "All") return campaigns;
-    return campaigns.filter((c) => c.category === activeCategory);
+    let filtered = activeCategory === "All" 
+      ? campaigns 
+      : campaigns.filter((c) => c.category === activeCategory);
+    
+    // Sort by id descending (higher id = more recent)
+    return [...filtered].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
   }, [campaigns, activeCategory]);
 
   return (
@@ -209,7 +213,7 @@ const Home = () => {
       {/* ══════════════════════════════════════════════════════════
           HERO
       ══════════════════════════════════════════════════════════ */}
-      <div className="relative mb-14">
+      <div className="relative mb-14 px-4 sm:px-6">
         {/* Hero ambient glow behind text */}
         <div className="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden">
           <div
@@ -222,57 +226,70 @@ const Home = () => {
           />
         </div>
 
-        <div className="relative text-center max-w-[640px] mx-auto px-4 pt-4 pb-2">
+        {/* Two-column layout: Content left, Globe right */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-6 items-center">
 
-          {/* Platform badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-[#f97316]/25 mb-7">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] animate-pulse" />
-            <span className="font-epilogue text-[10px] font-bold text-[#f97316] tracking-[0.18em] uppercase">
-              Decentralised · Transparent · On-Chain
-            </span>
+          {/* Left: Hero Content */}
+          <div className="text-center lg:text-left max-w-xl mx-auto lg:mx-0 lg:ml-24 pt-4 pb-2">
+
+            {/* Platform badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-[#f97316]/25 mb-7">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] animate-pulse" />
+              <span className="font-epilogue text-[10px] font-bold text-[#f97316] tracking-[0.18em] uppercase">
+                Decentralised · Transparent · On-Chain
+              </span>
+            </div>
+
+            {/* Main headline */}
+            <h1
+              className="font-jakarta font-extrabold leading-[1.0] mb-4 sm:mb-5 tracking-tight"
+              style={{ fontSize: "clamp(32px, 9vw, 64px)" }}
+            >
+              <span className="text-white">Fund the</span>
+              <br />
+              <span className="gradient-text">Future.</span>
+            </h1>
+
+            <p className="font-epilogue text-[15px] text-white/40 leading-relaxed mb-8 max-w-[400px] mx-auto lg:mx-0">
+              Back ideas that matter. Every transaction is on-chain, every donor
+              is protected, every campaign is fully accountable.
+            </p>
+
+            {/* CTA buttons */}
+            <div className="flex items-center justify-center lg:justify-start gap-3 flex-wrap">
+              <button
+                onClick={() => navigate("/create-campaign")}
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-jakarta font-bold text-sm
+                  text-white bg-gradient-to-r from-[#f97316] to-[#fb923c]
+                  hover:shadow-[0_0_28px_rgba(249,115,22,0.55)] hover:scale-[1.03]
+                  transition-all duration-200 active:scale-[0.98]"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+                Start a Campaign
+              </button>
+
+              <button
+                onClick={() => campaignsRef.current?.scrollIntoView({ behavior: "smooth" })}
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-jakarta font-semibold text-sm
+                  glass border border-white/[0.1] text-white/55 hover:text-white
+                  hover:border-[#f97316]/30 hover:bg-[#f97316]/[0.06]
+                  transition-all duration-200"
+              >
+                Explore Campaigns
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          {/* Main headline */}
-          <h1 className="font-jakarta font-extrabold leading-[1.0] mb-5 tracking-tight"
-            style={{ fontSize: "clamp(44px, 8vw, 72px)" }}>
-            <span className="text-white">Fund the</span>
-            <br />
-            <span className="gradient-text">Future.</span>
-          </h1>
-
-          <p className="font-epilogue text-[15px] text-white/40 leading-relaxed mb-8 max-w-[400px] mx-auto">
-            Back ideas that matter. Every transaction is on-chain, every donor
-            is protected, every campaign is fully accountable.
-          </p>
-
-          {/* CTA buttons */}
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <button
-              onClick={() => navigate("/create-campaign")}
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-jakarta font-bold text-sm
-                text-white bg-gradient-to-r from-[#f97316] to-[#fb923c]
-                hover:shadow-[0_0_28px_rgba(249,115,22,0.55)] hover:scale-[1.03]
-                transition-all duration-200 active:scale-[0.98]"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-              </svg>
-              Start a Campaign
-            </button>
-
-            <button
-              onClick={() => campaignsRef.current?.scrollIntoView({ behavior: "smooth" })}
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl font-jakarta font-semibold text-sm
-                glass border border-white/[0.1] text-white/55 hover:text-white
-                hover:border-[#f97316]/30 hover:bg-[#f97316]/[0.06]
-                transition-all duration-200"
-            >
-              Explore Campaigns
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+          {/* Right: Rotating Globe (desktop only) */}
+          <div className="hidden lg:block h-[500px] ml-8">
+            <RotatingGlobe />
           </div>
+
         </div>
       </div>
 
@@ -280,7 +297,7 @@ const Home = () => {
           LIVE STATS
       ══════════════════════════════════════════════════════════ */}
       {!isLoading && campaigns.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-12">
           <StatCard
             value={stats.total}
             label="Total Campaigns"

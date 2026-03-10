@@ -1,10 +1,14 @@
-﻿import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { themeModes } from "../constants";
 import { useStateContext } from "../context";
 
 const ThemeModes = () => {
   const { toggleTheme, themeMode } = useStateContext();
   const [isThemeActive, setIsThemeActive] = useState(themeMode);
+
+  useEffect(() => {
+    setIsThemeActive(themeMode);
+  }, [themeMode]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [hoveredTimeout, setHoveredTimeout] = useState(null);
 

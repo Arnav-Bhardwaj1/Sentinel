@@ -142,7 +142,7 @@ const CampaignDetails = () => {
       {isLoading && <Loader />}
 
       {/* ── Hero image ── */}
-      <div className="relative w-full h-[360px] rounded-3xl overflow-hidden mb-8">
+      <div className="relative w-full h-[240px] sm:h-[300px] md:h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden mb-6 sm:mb-8">
         <img
           src={campaign?.image || featuredBg}
           alt="campaign"
@@ -153,15 +153,15 @@ const CampaignDetails = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#07070f] via-[#07070f]/40 to-transparent" />
 
         {/* Title + category + share — over the image */}
-        <div className="absolute bottom-0 left-0 right-0 p-7">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-7">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-2.5 py-1 rounded-full bg-[#f97316]/30 border border-[#f97316]/40 font-epilogue text-[11px] text-[#fdba74] font-medium tracking-wide">
+                <span className="px-2.5 py-1 rounded-full bg-[#f97316]/30 border border-[#f97316]/40 font-epilogue text-[10px] sm:text-[11px] text-[#fdba74] font-medium tracking-wide">
                   {campaign?.category}
                 </span>
               </div>
-              <h1 className="font-jakarta font-bold text-2xl text-white leading-snug max-w-xl">
+              <h1 className="font-jakarta font-bold text-lg sm:text-xl md:text-2xl text-white leading-snug pr-2">
                 {campaign?.title}
               </h1>
             </div>
@@ -184,7 +184,7 @@ const CampaignDetails = () => {
       </div>
 
       {/* ── Stats row ── */}
-      <div className="flex flex-wrap gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-10">
         <CountBox title="Days Left" value={remainingDays === 0 ? "Ended" : remainingDays.toString()} />
         <CountBox title={`Raised of ${campaign?.target} ETH`} value={campaign?.amountCollected} />
         <CountBox title="Total Backers" value={donators?.length} />
@@ -192,16 +192,16 @@ const CampaignDetails = () => {
 
       {/* ── Visualizations ── */}
       <div className="w-full flex lg:flex-row flex-col gap-6 mb-10">
-        <div className="flex-1 glass rounded-2xl p-6 flex justify-center items-center border border-white/[0.06]">
+        <div className="flex-1 glass rounded-2xl p-4 sm:p-6 flex justify-center items-center border border-white/[0.06] min-h-[240px] sm:min-h-[280px] md:min-h-[320px]">
           <ThermometerChart
             current={parseFloat(campaign?.amountCollected || 0)}
             target={parseFloat(campaign?.target || 1)}
-            height={320}
+            height={typeof window !== 'undefined' && window.innerWidth < 640 ? 240 : typeof window !== 'undefined' && window.innerWidth < 768 ? 280 : 320}
           />
         </div>
-        <div className="flex-[2] glass rounded-2xl p-6 border border-white/[0.06]">
-          <h3 className="font-jakarta font-bold text-base text-white mb-5">Campaign Milestones</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex-[2] glass rounded-2xl p-4 sm:p-6 border border-white/[0.06]">
+          <h3 className="font-jakarta font-bold text-sm sm:text-base text-white mb-4 sm:mb-5">Campaign Milestones</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {milestones.map((milestone, index) => (
               <CircularMilestoneGauge key={index} milestone={milestone} index={index} />
             ))}
@@ -283,7 +283,7 @@ const CampaignDetails = () => {
               </p>
             </div>
 
-            <div className="p-5 flex flex-col gap-4">
+            <div className="p-4 sm:p-5 flex flex-col gap-3 sm:gap-4">
               <FormField
                 labelName="Amount (ETH)"
                 placeholder="0.1"
@@ -362,7 +362,7 @@ const CampaignDetails = () => {
 
           {/* Owner actions */}
           {address === campaign?.owner && (
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="flex flex-col gap-2 sm:gap-3 mt-3 sm:mt-4">
               <Link to={`/update-campaign/${campaign?.id}`}>
                 <CustomButton
                   btnType="button"

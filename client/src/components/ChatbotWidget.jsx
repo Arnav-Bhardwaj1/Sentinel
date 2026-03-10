@@ -78,7 +78,7 @@ const ChatbotWidget = ({ campaignData }) => {
       {/* Chatbot Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#f97316] to-[#fb923c] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 hover:scale-110"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#f97316] to-[#fb923c] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 hover:scale-110 active:scale-95"
         aria-label="Toggle chatbot"
       >
         {isOpen ? (
@@ -90,7 +90,7 @@ const ChatbotWidget = ({ campaignData }) => {
 
       {/* Chatbot Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] bg-white dark:bg-[#1c1c24] rounded-2xl shadow-2xl flex flex-col z-50 animate-slideUp">
+        <div className="fixed bottom-20 sm:bottom-24 right-2 sm:right-6 left-2 sm:left-auto w-auto sm:w-96 max-w-[calc(100vw-1rem)] sm:max-w-none h-[calc(100vh-120px)] sm:h-[500px] max-h-[600px] bg-white dark:bg-[#1c1c24] rounded-2xl shadow-2xl flex flex-col z-50 animate-slideUp">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#f97316] to-[#fb923c] p-4 rounded-t-2xl">
             <h3 className="font-epilogue font-bold text-white text-lg">

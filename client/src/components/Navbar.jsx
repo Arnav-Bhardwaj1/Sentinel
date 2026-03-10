@@ -9,7 +9,7 @@ import ThemeModes from "./ThemeModes";
 
 const Navbar = () => {
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const { address, themeMode } = useStateContext();
+  const { address, isDark } = useStateContext();
 
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
@@ -18,7 +18,7 @@ const Navbar = () => {
         <input
           type="text"
           placeholder="Search campaigns..."
-          className="flex w-full font-epilogue font-normal text-sm placeholder:text-white/30 text-white bg-transparent outline-none px-5 py-3"
+          className="flex w-full font-epilogue font-normal text-sm placeholder:text-slate-400 dark:placeholder:text-white/30 text-slate-900 dark:text-white bg-transparent outline-none px-5 py-3"
         />
         <div className="w-[56px] h-full bg-[#f97316] flex justify-center items-center cursor-pointer hover:bg-[#c2410c] transition-colors duration-200 flex-shrink-0">
           <img src={search} alt="search" className="w-[16px] h-[16px] object-contain" />
@@ -34,7 +34,9 @@ const Navbar = () => {
             color: "#07070f",
             boxShadow: "0 0 20px rgba(3,218,197,0.3)",
           }}
-          theme={darkTheme({
+          theme={!isDark ? lightTheme({
+            colors: { accentButtonBg: "#03dac5", primaryButtonBg: "#03dac5", accentText: "#03dac5" },
+          }) : darkTheme({
             colors: {
               accentButtonBg: "#03dac5",
               primaryButtonBg: "#03dac5",
@@ -88,12 +90,12 @@ const Navbar = () => {
                 {({ isActive }) => (
                   <li
                     className={`flex items-center gap-3 px-5 py-3 transition-colors duration-150 ${
-                      isActive ? "bg-[#f97316]/15" : "hover:bg-white/[0.05]"
+                      isActive ? "bg-[#f97316]/15" : "hover:bg-slate-200/60 dark:hover:bg-white/[0.05]"
                     }`}
                     onClick={() => setToggleDrawer(false)}
                   >
                     <img src={Link.imgUrl} alt={Link.name} className="w-5 h-5 object-contain opacity-70" />
-                    <p className={`font-epilogue font-semibold text-sm ${isActive ? "text-[#f97316]" : "text-white/70"}`}>
+                    <p className={`font-epilogue font-semibold text-sm ${isActive ? "text-[#f97316]" : "text-slate-600 dark:text-white/70"}`}>
                       {Link.name}
                     </p>
                   </li>
@@ -101,14 +103,16 @@ const Navbar = () => {
               </NavLink>
             ))}
           </ul>
-          <div className="flex justify-between items-center px-5 py-4 border-t border-white/[0.07]">
+          <div className="flex justify-between items-center px-5 py-4 border-t border-slate-200 dark:border-white/[0.07]">
             <ConnectWallet
               className="!font-epilogue !font-semibold !text-sm !rounded-xl !border-0 !outline-none"
               style={{
                 background: "linear-gradient(135deg, #03dac5, #00b4a0)",
                 color: "#07070f",
               }}
-              theme={darkTheme({
+              theme={!isDark ? lightTheme({
+                colors: { accentButtonBg: "#03dac5", primaryButtonBg: "#03dac5", accentText: "#03dac5" },
+              }) : darkTheme({
                 colors: { accentButtonBg: "#03dac5", primaryButtonBg: "#03dac5", accentText: "#03dac5" },
               })}
               modalTitle="Sentinel"

@@ -4,7 +4,7 @@ import { Sidebar, Navbar, Footer } from "./components";
 
 const App = () => {
   return (
-    <div className="relative min-h-screen bg-[#07070f] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#07070f] overflow-x-hidden transition-colors duration-200">
       {/* Dot grid background */}
       <div className="fixed inset-0 dot-grid opacity-100 pointer-events-none z-0" />
 

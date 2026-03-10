@@ -117,7 +117,7 @@ const UPIForm = ({ onPay, loading }) => {
       {mode === "qr" ? (
         /* ── QR panel ── */
         <div className="flex flex-col items-center gap-3">
-          <div className="p-3 rounded-2xl bg-white/[0.06] border border-white/[0.08]">
+          <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.06] border border-white/[0.08] max-w-[240px] sm:max-w-none">
             <DummyQR />
           </div>
           <p className="font-epilogue text-xs text-white/30 text-center leading-relaxed">
@@ -410,22 +410,22 @@ const PaymentModal = ({ isOpen, onClose, amountINR, campaignTitle }) => {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md glass rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden animate-fadeIn">
+      <div className="relative w-full max-w-md mx-2 sm:mx-0 glass rounded-2xl sm:rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden animate-fadeIn max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="relative p-5 border-b border-white/[0.06]">
+        <div className="relative p-4 sm:p-5 border-b border-white/[0.06]">
           <div className="absolute inset-0 bg-gradient-to-r from-[#f97316]/10 to-[#03dac5]/5" />
 
-          <div className="relative flex items-start justify-between">
-            <div>
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
                 {/* Razorpay-style logo mark */}
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                   <path d="M6 3l12 9-4 1 2 8L6 3z" fill="#f97316" />
                 </svg>
-                <span className="font-jakarta font-bold text-white text-base">Secure Checkout</span>
+                <span className="font-jakarta font-bold text-white text-sm sm:text-base">Secure Checkout</span>
               </div>
-              <p className="font-epilogue text-xs text-white/35 truncate max-w-[240px]">{campaignTitle}</p>
+              <p className="font-epilogue text-xs text-white/35 truncate">{campaignTitle}</p>
             </div>
 
             <button
@@ -462,7 +462,7 @@ const PaymentModal = ({ isOpen, onClose, amountINR, campaignTitle }) => {
         </div>
 
         {/* Body */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           {success ? (
             <SuccessScreen
               amountINR={displayAmount}

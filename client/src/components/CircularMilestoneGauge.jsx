@@ -1,8 +1,14 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const CircularMilestoneGauge = ({ milestone, index }) => {
   const [progress, setProgress] = useState(0);
-  const percentage = Math.min((milestone.current / milestone.target) * 100, 100);
+  
+  // Safely calculate percentage, handling string values and edge cases
+  const current = parseFloat(milestone.current) || 0;
+  const target = parseFloat(milestone.target) || 0;
+  const percentage = target > 0 
+    ? Math.min((current / target) * 100, 100) 
+    : 0;
   const radius = 70;
   const strokeWidth = 12;
   const normalizedRadius = radius - strokeWidth / 2;
@@ -73,7 +79,7 @@ const CircularMilestoneGauge = ({ milestone, index }) => {
           {milestone.name}
         </h4>
         <p className="font-epilogue text-xs text-[#4d4d4d] dark:text-[#808191] mt-1">
-          {milestone.current} / {milestone.target} ETH
+          {current.toFixed(4)} / {target.toFixed(4)} ETH
         </p>
       </div>
     </div>

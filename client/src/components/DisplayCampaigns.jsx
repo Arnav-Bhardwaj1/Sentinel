@@ -24,11 +24,11 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
       {/* Loading skeletons */}
       {isLoading && (
-        <div className="flex flex-wrap gap-6">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="sm:w-[300px] w-full h-[380px] rounded-2xl glass border border-white/[0.06] animate-pulse"
+              className="w-full h-[380px] rounded-2xl glass border border-white/[0.06] animate-pulse"
             >
               <div className="h-[190px] bg-white/[0.04] rounded-t-2xl" />
               <div className="p-5 flex flex-col gap-4">
@@ -64,7 +64,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
       {/* Campaign grid */}
       {!isLoading && campaigns?.length > 0 && (
-        <div className="flex flex-wrap gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {campaigns.map((campaign) => (
             <FundCard
               key={uuidv4()}
