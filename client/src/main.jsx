@@ -14,6 +14,7 @@ import {
   Profile,
   UpdateCampaign,
   Withdraw,
+  Analytics,
 } from "./pages";
 
 const router = createBrowserRouter([
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/disconnect",
         element: <Disconnect />,
+      },
+      {
+        path: "/analytics",
+        element: <Analytics />,
       },
     ],
   },

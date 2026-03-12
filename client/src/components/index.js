@@ -16,3 +16,7 @@ export { default as ImpactTooltip } from "./ImpactTooltip";
 export { default as ChatbotWidget } from "./ChatbotWidget";
 export { default as MilestoneNotification } from "./MilestoneNotification";
 export { default as RotatingGlobe } from "./RotatingGlobe";
+export { default as AnimatedBarChart } from "./AnimatedBarChart";
+export { default as DoughnutChart } from "./DoughnutChart";
+export { default as SparklineChart } from "./SparklineChart";
+export { default as ActivityFeed } from "./ActivityFeed";

@@ -22,6 +22,11 @@ export const navlinks = [
     route: "/",
   },
   {
+    name: "Analytics",
+    imgUrl: dashboard,
+    route: "/analytics",
+  },
+  {
     name: "Campaign",
     imgUrl: createCampaign,
     route: "/create-campaign",
