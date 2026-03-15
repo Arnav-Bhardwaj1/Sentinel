@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar, Navbar, Footer } from "./components";
+import CommandPalette from "./components/CommandPalette";
 
 const App = () => {
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
+  const openPalette = useCallback(() => setCommandPaletteOpen(true), []);
+  const closePalette = useCallback(() => setCommandPaletteOpen(false), []);
+
+  // Global ⌘K / Ctrl+K listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#07070f] overflow-x-hidden transition-colors duration-200">
       {/* Dot grid background */}
@@ -22,12 +40,15 @@ const App = () => {
         {/* Main content */}
         <div className="flex flex-col justify-between w-full gap-10">
           <div className="flex-1 max-sm:w-full sm:pr-5">
-            <Navbar />
+            <Navbar onOpenCommandPalette={openPalette} />
             <Outlet />
           </div>
           <Footer />
         </div>
       </div>
+
+      {/* Command Palette (global, above everything) */}
+      <CommandPalette isOpen={commandPaletteOpen} onClose={closePalette} />
     </div>
   );
 };

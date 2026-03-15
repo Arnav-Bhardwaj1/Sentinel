@@ -20,3 +20,4 @@ export { default as AnimatedBarChart } from "./AnimatedBarChart";
 export { default as DoughnutChart } from "./DoughnutChart";
 export { default as SparklineChart } from "./SparklineChart";
 export { default as ActivityFeed } from "./ActivityFeed";
+export { default as CommandPalette } from "./CommandPalette";
